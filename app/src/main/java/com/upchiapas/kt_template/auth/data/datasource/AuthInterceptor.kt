@@ -11,6 +11,8 @@ class AuthInterceptor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
+
+        // CORRECCIÓN: url y encodedPath se llaman como propiedades sin paréntesis
         val path = originalRequest.url.encodedPath
         val isAuthEndpoint = path.endsWith("/login") || path.endsWith("/register")
 
@@ -30,6 +32,7 @@ class AuthInterceptor(
 
         val response = chain.proceed(request)
 
+        // CORRECCIÓN: code se llama como propiedad sin paréntesis
         if (response.code == 401 && !isAuthEndpoint) {
             runBlocking { sessionStorage.clearSession() }
         }

@@ -1,44 +1,109 @@
 package com.upchiapas.kt_template.focustask.presentation.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.upchiapas.kt_template.focustask.domain.model.Task
 
 @Composable
-fun TaskCard(task: com.upchiapas.kt_template.focustask.data.model.Task, onToggle: () -> Unit) {
-    val borderColor = if (task.isCompleted) Color(0xFF4CAF50) else Color.LightGray
-    val statusText = if (task.isCompleted) "Completada (+${task.points} pts)" else "Pendiente (${task.points} pts posibles)"
-    val textColor = if (task.isCompleted) Color(0xFF4CAF50) else Color(0xFFE65100)
-
+fun TaskCard(
+    task: Task,
+    onClick: () -> Unit,
+    onToggleComplete: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
-        border = BorderStroke(1.dp, borderColor),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Checkbox(checked = task.isCompleted, onCheckedChange = { onToggle() })
-            Column(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
-                Text(text = task.title, color = if(task.isCompleted) Color.Gray else Color.Black)
-                if (task.description.isNotBlank()) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = task.isCompleted,
+                    onCheckedChange = { onToggleComplete() }
+                )
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     Text(
-                        text = task.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.DarkGray,
-                        maxLines = 2,
+                        text = task.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
+
+                    if (task.description.isNotBlank()) {
+                        Text(
+                            text = task.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AssistChip(
+                            onClick = {},
+                            label = { Text(task.category) }
+                        )
+                        AssistChip(
+                            onClick = {},
+                            label = { Text("${task.estimatedTime}h • ${task.priority}") }
+                        )
+                        Text(
+                            text = "+${task.points} pts",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
-                Text(text = "${task.category} | ${task.estimatedTime} hrs | Prioridad ${task.priority}", style = MaterialTheme.typography.bodySmall)
-                Text(text = statusText, color = textColor, style = MaterialTheme.typography.bodySmall)
+            }
+
+            Column {
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar"
+                    )
+                }
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }

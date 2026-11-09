@@ -21,8 +21,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Variable para la URL de tu API requerida en AppContainer.kt
-        // (Cambia "https://mi-api.com/v1/" por la URL real de tu servidor)
-        buildConfigField("String", "API_BASE_URL", "\"https://mi-api.com/v1/\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://focustask.44-220-6-229.sslip.io/\"")
     }
 
     buildTypes {

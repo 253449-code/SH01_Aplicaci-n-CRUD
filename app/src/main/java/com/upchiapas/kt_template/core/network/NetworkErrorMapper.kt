@@ -41,6 +41,9 @@ class NetworkErrorMapper(
             is IOException -> {
                 Exception("Error de red: comprueba tu conexión")
             }
+            is SecurityException -> {
+                Exception("Error de permisos: la app no tiene acceso a internet")
+            }
             else -> throwable
         }
     }
